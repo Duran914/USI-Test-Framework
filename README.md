@@ -1,10 +1,10 @@
-# USI-demo-test-framwork
+# USI-Test-Framwork
 
 ## Technologies 
 
 1. Node.js 
 2. Puppeteer
-3. Mocha 
+3. Mocha
 4. Chai (later on)
 
 git clone https://github.com/Duran914/USI-Test-Framework.git
