@@ -1,5 +1,6 @@
 const usi = require("./utils/usi_test.js");
 const puppeteer = require("puppeteer");
+const expect = require('chai').expect;
 
 describe("USI shoes TT 67890", () => {
   before(async () => {

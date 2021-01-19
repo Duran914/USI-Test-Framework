@@ -5,12 +5,18 @@
 1. Node.js 
 2. Puppeteer
 3. Mocha
-4. Chai (later on)
+4. Chai
 
 git clone https://github.com/Duran914/USI-Test-Framework.git
 
 npm install
 
-To run test (will run all scripts in /test directory)
+To run all test (will run all scripts in /test directory)
+``` Javascript
+ mocha --no-timeout --slow 100000
+```
+To run a single test (One campaign test; The name of one describe() function)
 
-npx mocha --no-timeout --slow 100000
+``` Javascript
+mocha -g "Company TT 12345" --no-timeout --slow 10000
+```
