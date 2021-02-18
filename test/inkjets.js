@@ -11,11 +11,13 @@ describe("Inkjets TT 22374", () => {
   usi.navigate_url("https://www.inkcartridges.com/product-brother-compatible-ink-lc61bulk-2136")
   usi.click({"Add To Cart Button": ".add_to_cart_btn.button"})
   usi.click({"View cart & checkout button":".cart-container button[data-url='https://www.inkcartridges.com/checkout/cart/']"})
+  usi.waitForVisibility("#shopping-cart-table")
+  usi.check_id()
   usi.launch_modal()
   usi.click({"USI CTA": ".usi_submitbutton"})
   usi.coupon_validation(
       validate_by="selector-text",
-      selecotor=".messages .async-success-msg .ng-binding",
+      selector=".messages .async-success-msg .ng-binding",
       validation_text="COUPON CODE \"ICAFLQ1\" WAS APPLIED."
     )
   after(async () => {

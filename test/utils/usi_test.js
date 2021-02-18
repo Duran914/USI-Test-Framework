@@ -1,3 +1,4 @@
+const expect = require('chai').expect;
 
 function navigate_url(url){
     it(`Navigating to ${url}`, async () => {
@@ -21,11 +22,13 @@ function append_url(param){
 
 function launch_modal(){
     it("Launch TT", async () => {
+        await page.waitForSelector("#usi_display.usi_hide_css")
         await page.evaluate(function(){
            usi_js.display();
        });
     })
   }
+
 
 function click(element_data) {
     for (const selector in element_data) {
@@ -46,7 +49,7 @@ function input(element_data) {
 }
 
 // validate_by = selector or selector_text
-function coupon_validation(validate_by, selector, validation_text=""){
+function coupon_validation(validate_by, selector, validation_text){
     it("Coupon validation", async () => {
         if(validate_by == "selector"){
             if(await page.waitForSelector(selector)){
@@ -54,9 +57,9 @@ function coupon_validation(validate_by, selector, validation_text=""){
                 }
             }
             else if(validate_by == "selector-text"){
-                let coupon_field = await page.waitForSelector(selector);
+                const coupon_field = await page.waitForSelector(selector);
                 // Get innerText of coupon_field
-                let scraped_coupon_text = await page.evaluate(coupon_field => coupon_field.innerText, coupon_field);
+                const scraped_coupon_text = await page.evaluate(coupon_field => coupon_field.innerText, coupon_field);
                 expect(scraped_coupon_text).to.equal(validation_text);
             }
     })
@@ -70,7 +73,23 @@ function boostbar_check(selector="#usi_boost_container") {
     });
 }
 
+function waitForVisibility(Element_name, selector) {
+    it(`${Element_name} is now visible`, async() => {
+        await page.waitForSelector(selector,{visible: true})
+    });
+}
+
+// Work in prgress
+// function check_id() {
+//     it(`site id `, async() => {
+//             const result = await page.evaluate(() => {
+//                 return usi_js.campaign.site_id
+//               });
+//               console.log(result)
+//     });
+// }
+
 module.exports = { 
     navigate_url, launch_modal, click, input, append_url, coupon_validation,
-    boostbar_check
+    boostbar_check, check_id, waitForVisibility
 };
