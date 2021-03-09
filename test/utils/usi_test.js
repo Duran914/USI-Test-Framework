@@ -130,6 +130,18 @@ function email_follow(email_type) {
     });  
 }
 
+function refresh_page(seconds) {
+    it('Page Refreshed', async() => {
+        await page.reload(seconds)
+    });
+  }
+  
+  function wait(seconds){
+    it(`Waited for ${seconds} ms.`, async() => {
+        await page.waitForTimeout(seconds)
+    });
+  }
+
 // Work in prgress
 // function check_id() {
 //     it(`site id `, async() => {
@@ -142,5 +154,5 @@ function email_follow(email_type) {
 
 module.exports = { 
     navigate_url, launch_modal, click, input, append_url, coupon_validation,
-    boostbar_check, waitForVisibility, email_follow, wait, reload_email, force_load_pc
+    boostbar_check, waitForVisibility, email_follow, wait, refresh_page, 
 };
