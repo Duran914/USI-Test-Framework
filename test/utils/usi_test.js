@@ -79,6 +79,57 @@ function waitForVisibility(Element_name, selector) {
     });
 }
 
+function email_follow(email_type) {
+    it("Navigating to email", async () => {
+        let cookies = await page.cookies();
+        let session = '';
+        let session_tries = 5;
+        let session_type = ""
+        let session_found =  false;
+        let email_type_lcase = email_type.toLowerCase();
+
+        if(email_type_lcase == "lc"){
+            session_type = "usi_sess";
+        }
+        else if(email_type_lcase == "pc"){  
+            session_type = "USI_Session";
+        }
+
+        while (session == '') {
+            for (let i = 0; i < cookies.length; i++) {
+              let usi_cookie = cookies[i];
+              if(usi_cookie["name"] == session_type){
+                session = cookies[i].value
+                } 
+            }
+            session_tries -= 1;
+            await page.waitForTimeout(5000)
+
+            if(session_tries == 0){
+                console.log("Session not found");
+                break;
+            }
+         console.log(`tries lfft: ${session_tries}`);
+         console.log("session: " + session);
+      } 
+        await page.goto(`https://www.upsellit.com/email/onlineversion.jsp?${session}~1`)  
+
+        let email_loads = 5
+        // Reloads page until email loads
+        while (await page.title() == "Oops, email has expired") {
+            await page.reload()
+            await page.waitForTimeout(5000)
+            email_loads -= 1
+            console.log("Loads left: " + email_loads);
+            
+            if (email_loads == 0) {
+                console.log("Email not found");
+                break;
+            }
+        }
+    });  
+}
+
 // Work in prgress
 // function check_id() {
 //     it(`site id `, async() => {
@@ -91,5 +142,5 @@ function waitForVisibility(Element_name, selector) {
 
 module.exports = { 
     navigate_url, launch_modal, click, input, append_url, coupon_validation,
-    boostbar_check, check_id, waitForVisibility
+    boostbar_check, waitForVisibility, email_follow, wait, reload_email, force_load_pc
 };
