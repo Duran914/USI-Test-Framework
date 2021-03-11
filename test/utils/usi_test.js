@@ -1,9 +1,12 @@
 const expect = require('chai').expect;
 
-function navigate_url(url){
+function navigate_url(url, check_tag = true){
     it(`Navigating to ${url}`, async () => {
         await page.goto(url, { waitUntil: "networkidle0" });
     });
+    if (check_tag == true) {
+        appfile_loaded();
+    }
   }
 
 function append_url(param){
@@ -85,7 +88,6 @@ function email_follow(email_type) {
         let session = '';
         let session_tries = 5;
         let session_type = ""
-        let session_found =  false;
         let email_type_lcase = email_type.toLowerCase();
 
         if(email_type_lcase == "lc"){
@@ -142,17 +144,67 @@ function refresh_page(seconds) {
     });
   }
 
+  function check_appfile() {
+    it('App file loaded', async() => {
+        let app_file_loads = 5
+        while (app_file_loads != 0) {
+            try {
+                if(await page.evaluate(() => {return usi_app})){
+                    expect(await page.evaluate(() => {return usi_app})).to.be.a('object');
+                    break;
+                }
+              } catch (error) {
+                await page.waitForTimeout(5000)
+                app_file_loads--;
+                console.log(`App file tries left: ${app_file_loads}`);
+              }
+              if (app_file_loads == 0) {
+                expect(await page.evaluate(() => {return usi_app})).to.be.a('object');
+                console.log("App file not Loaded");
+                break;
+            } 
+        } 
+    });
+  }
+
 // Work in prgress
-// function check_id() {
-//     it(`site id `, async() => {
-//             const result = await page.evaluate(() => {
-//                 return usi_js.campaign.site_id
-//               });
-//               console.log(result)
-//     });
-// }
+function check_site_id(id) {
+    it(`site id ${id} loaded`, async() => {      
+        // Ensures usi_js library has loaded
+        let usi_js_loads = 5
+        while (usi_js_loads != 0) {
+            try {
+                if(await page.evaluate(() => {return usi_js})){
+                    expect(await page.evaluate(() => {return usi_js})).to.be.a('object');
+                    break;
+                }
+              } catch (error) {
+                await page.waitForTimeout(5000)
+                usi_js_loads--;
+                console.log(`usi_js tries left: ${usi_js_loads}`);
+              }
+              if (usi_js_loads == 0) {
+                expect(await page.evaluate(() => {return usi_js})).to.be.a('object');
+                console.log("usi_js not Loaded");
+                break;
+            } 
+        }        
+        // Check for correct site id
+        let site_id_loads = 5
+        while (await page.evaluate(() => {return usi_js.campaign.site_id}) != id) {
+            await page.waitForTimeout(5000);
+            site_id_loads--;
+            console.log(`Site id tries left: ${site_id_loads}`);
+            if (site_id_loads == 0) {
+                expect(await page.evaluate(() => {return usi_js.campaign.site_id})).to.equal(id);
+                console.log("Site ID not Loaded");
+                break;
+            }
+        }
+    });
+}
 
 module.exports = { 
     navigate_url, launch_modal, click, input, append_url, coupon_validation,
-    boostbar_check, waitForVisibility, email_follow, wait, refresh_page, 
+    boostbar_check, waitForVisibility, email_follow, wait, refresh_page, check_site_id, check_appfile
 };
