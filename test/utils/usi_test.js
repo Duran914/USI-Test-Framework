@@ -1,11 +1,11 @@
 const expect = require('chai').expect;
 
-function navigate_url(url, check_tag = true){
+function navigate_url(url, check_tag=true){
     it(`Navigating to ${url}`, async () => {
         await page.goto(url, { waitUntil: "networkidle0" });
     });
     if (check_tag == true) {
-        appfile_loaded();
+        appfile_check();
     }
   }
 
@@ -144,7 +144,7 @@ function refresh_page(seconds) {
     });
   }
 
-  function check_appfile() {
+  function appfile_check() {
     it('App file loaded', async() => {
         let app_file_loads = 5
         while (app_file_loads != 0) {
@@ -168,7 +168,7 @@ function refresh_page(seconds) {
   }
 
 // Work in prgress
-function check_site_id(id) {
+function site_id_check(id) {
     it(`site id ${id} loaded`, async() => {      
         // Ensures usi_js library has loaded
         let usi_js_loads = 5
@@ -204,7 +204,38 @@ function check_site_id(id) {
     });
 }
 
+function split_test_check(control_id) {
+
+    it('USI group loaded', async() => {
+        let cookies = await page.cookies();
+        let split_group = '';
+        let split_group_tries = 5;
+    
+        while (split_group == '') {
+            for (let i = 0; i < cookies.length; i++) {
+              let usi_cookie = cookies[i];
+              if(usi_cookie["name"] == `usi_dice_roll${control_id}`){
+                 split_group = cookies[i].value;
+                 expect(split_group).to.equal('1', message=`USI control group loaded ${split_group}`)
+                 break;
+              } 
+            }
+            split_group_tries--;
+            await page.waitForTimeout(5000)
+    
+            if(split_group_tries == 0){
+                expect(split_group).to.equal('1')
+                break;
+            }
+
+         console.log(`split_group tries lfft: ${split_group_tries}`);
+         console.log("split_group: " + split_group);
+      }  
+    });
+}
+
 module.exports = { 
     navigate_url, launch_modal, click, input, append_url, coupon_validation,
-    boostbar_check, waitForVisibility, email_follow, wait, refresh_page, check_site_id, check_appfile
+    boostbar_check, waitForVisibility, email_follow, wait, refresh_page, site_id_check, 
+    appfile_check, split_test_check
 };
