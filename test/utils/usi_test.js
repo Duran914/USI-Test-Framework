@@ -150,7 +150,6 @@ function refresh_page(seconds) {
         while (app_file_loads != 0) {
             try {
                 if(await page.evaluate(() => {return usi_app})){
-                    expect(await page.evaluate(() => {return usi_app})).to.be.a('object');
                     break;
                 }
               } catch (error) {
@@ -159,11 +158,11 @@ function refresh_page(seconds) {
                 console.log(`App file tries left: ${app_file_loads}`);
               }
               if (app_file_loads == 0) {
-                expect(await page.evaluate(() => {return usi_app})).to.be.a('object');
                 console.log("App file not Loaded");
                 break;
             } 
         } 
+        expect(await page.evaluate(() => {return usi_app})).to.be.a('object');
     });
   }
 
@@ -175,7 +174,6 @@ function site_id_check(id) {
         while (usi_js_loads != 0) {
             try {
                 if(await page.evaluate(() => {return usi_js})){
-                    expect(await page.evaluate(() => {return usi_js})).to.be.a('object');
                     break;
                 }
               } catch (error) {
@@ -184,11 +182,11 @@ function site_id_check(id) {
                 console.log(`usi_js tries left: ${usi_js_loads}`);
               }
               if (usi_js_loads == 0) {
-                expect(await page.evaluate(() => {return usi_js})).to.be.a('object');
                 console.log("usi_js not Loaded");
                 break;
             } 
-        }        
+        }  
+        expect(await page.evaluate(() => {return usi_js})).to.be.a('object');      
         // Check for correct site id
         let site_id_loads = 5
         while (await page.evaluate(() => {return usi_js.campaign.site_id}) != id) {
@@ -196,11 +194,11 @@ function site_id_check(id) {
             site_id_loads--;
             console.log(`Site id tries left: ${site_id_loads}`);
             if (site_id_loads == 0) {
-                expect(await page.evaluate(() => {return usi_js.campaign.site_id})).to.equal(id);
                 console.log("Site ID not Loaded");
                 break;
             }
         }
+        expect(await page.evaluate(() => {return usi_js.campaign.site_id})).to.equal(id);
     });
 }
 
@@ -216,7 +214,6 @@ function split_test_check(control_id) {
               let usi_cookie = cookies[i];
               if(usi_cookie["name"] == `usi_dice_roll${control_id}`){
                  split_group = cookies[i].value;
-                 expect(split_group).to.equal('1', message=`USI control group loaded ${split_group}`)
                  break;
               } 
             }
@@ -224,13 +221,13 @@ function split_test_check(control_id) {
             await page.waitForTimeout(5000)
     
             if(split_group_tries == 0){
-                expect(split_group).to.equal('1')
                 break;
             }
 
          console.log(`split_group tries lfft: ${split_group_tries}`);
          console.log("split_group: " + split_group);
-      }  
+      }
+      expect(split_group).to.equal('1', message=`USI control group loaded ${split_group}`)  
     });
 }
 
